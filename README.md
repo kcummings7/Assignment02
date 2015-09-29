@@ -13,3 +13,5 @@ URLs for each file:
 http://rawgit.com/kcummings7/Assignment02/master/checkerFinal.ino
 http://rawgit.com/kcummings7/Assignment02/master/graphs.html
 http://rawgit.com/kcummings7/Assignment02/master/visualizations.html
+
+An image of the photon's layout can be found under issues.
