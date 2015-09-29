@@ -1,0 +1,453 @@
+<!DOCTYPE HTML>
+<html>
+<!-- 
+Author: Katherine Cummings
+Several lines of code have inspiration from examples on photon forums/tutorials and the paperjs tutorials.
+-->
+<head>
+	<script type="text/javascript">
+	var subject = 0;
+	var lum = 0;
+	var x = 60;
+	var x1 = 60;
+
+    function start(){//function takes in data from the photon, parses it, and assigns it to variables for later use
+		
+        document.getElementById("visitors").innerHTML = "Connecting to Photon!";
+        var deviceID = "3d0031001747343337363432";//photon id information
+        var accessToken = "5ba5aa063223de35f5ad312fb670bf8b829e36a9";
+        var eventSource = new EventSource("https://api.spark.io/v1/devices/" + deviceID + "/events/?access_token=" + accessToken);
+
+        eventSource.addEventListener('open', function(e) {console.log("Opened!"); },false);
+		eventSource.addEventListener('error', function(e) {console.log("Errored!"); },false);
+
+        eventSource.addEventListener('run', function(e){
+            var rawData = JSON.parse(e.data);
+            var parsedData = JSON.parse(rawData.data);
+            var tempSpan = document.getElementById("visitors");
+            tempSpan.innerHTML = "Visitors: " + parsedData.Persons + " total, as of " + rawData.published_at + ".  Light levels of: " + parsedData.Light;//divides up data for later display as a string
+            tempSpan.style.fontSize = "28px";
+			subject = parsedData.Persons;//assigns parsed data to variables for use
+			lum = parsedData.Light;
+        }, false);
+		
+    }
+    </script>
+	<script type="text/javascript" src="dist/paper-full.js"></script>
+	<script type="text/paperscript" canvas="myCanvas">//creates first graph; visitor numbers
+	
+			var height = 400;
+			view.viewSize = new Size(1000, 500);//sets up canvas
+
+			var path = new Path();//following lines and point text make up graph structure
+			path.strokeColor = 'black';
+			var start = new Point(60, 20);
+			path.moveTo(start);
+			path.lineTo(start + [ 0, height]);
+			
+			var path = new Path();
+			path.strokeColor = 'black';
+			var start = new Point(60, height+20);
+			path.moveTo(start);
+			path.lineTo(start + [ 940, 0]);
+			
+			var text = new PointText(new Point(450, height+50));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = 'Time\n(Seconds)';
+			
+			var text = new PointText(new Point(25, height/2));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = 'Number\nof\nVisitors\n';
+			
+			var text = new PointText(new Point(50, height+30));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '0';
+			
+			var text = new PointText(new Point(50,375));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '1';
+			
+			var text = new PointText(new Point(50,325));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '2';
+			
+			var text = new PointText(new Point(50,275));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '3';
+			
+			var text = new PointText(new Point(50,225));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '4';
+			
+			var text = new PointText(new Point(50,175));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '5';
+			
+			var text = new PointText(new Point(50,125));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '6';
+			
+			var text = new PointText(new Point(50,75));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '7';
+			
+			var text = new PointText(new Point(50,25));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '8';
+			
+			var text = new PointText(new Point(100,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '1';
+			
+			var text = new PointText(new Point(140,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '2';
+			
+			var text = new PointText(new Point(180,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '3';
+			
+			var text = new PointText(new Point(220,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '4';
+			
+			var text = new PointText(new Point(260,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '5';
+			
+			var text = new PointText(new Point(300,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '6';
+			
+			var text = new PointText(new Point(340,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '7';
+			
+			var text = new PointText(new Point(380,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '8';
+			
+			var text = new PointText(new Point(420,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '9';
+			
+			var text = new PointText(new Point(460,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '10';
+			
+			var text = new PointText(new Point(500,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '11';
+			
+			var text = new PointText(new Point(540,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '12';
+			
+			var text = new PointText(new Point(580,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '13';
+			
+			var text = new PointText(new Point(620,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '14';
+			
+			var text = new PointText(new Point(660,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '15';
+			
+			var text = new PointText(new Point(700,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '16';
+			
+			var text = new PointText(new Point(740,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '17';
+			
+			var text = new PointText(new Point(780,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '18';
+			
+			var text = new PointText(new Point(820,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '19';
+			
+			var text = new PointText(new Point(860,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '20';
+			
+			var text = new PointText(new Point(900,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '21';
+			
+			var text = new PointText(new Point(940,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '22';
+			
+			var text = new PointText(new Point(980,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '23';
+			
+			var counter = 0;
+			var temp = subject;
+			var myPath = new Path();
+			myPath.strokeColor = 'black';
+			
+			function onFrame(event){//function produces new line segments on the graph as new data is fed in
+				
+				if((event.time-counter)>=1){
+					
+					temp = subject;
+					myPath.add(new Point(x,((height + 20) - (temp*50))));//adds the newest point to graph
+					x = x + 40;
+					counter = counter + 1;
+				}
+			}
+	</script>
+	<script type="text/paperscript" canvas="myCanvas2">//creates second graph; ambient light levels
+	
+			var height = 400;
+			view.viewSize = new Size(1000, 500);//sets up canvas
+
+			var path = new Path();//following lines and point text make up graph structure
+			path.strokeColor = 'black';
+			var start = new Point(60, 20);
+			path.moveTo(start);
+			path.lineTo(start + [ 0, height]);
+			
+			var path = new Path();
+			path.strokeColor = 'black';
+			var start = new Point(60, height+20);
+			path.moveTo(start);
+			path.lineTo(start + [ 940, 0]);
+			
+			var text = new PointText(new Point(450, height+50));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = 'Time\n(Seconds)';
+			
+			var text = new PointText(new Point(25, height/2-15));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = 'Light\nLevel';
+			
+			var text = new PointText(new Point(40, height+30));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '0';
+			
+			var text = new PointText(new Point(40,375));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '50';
+			
+			var text = new PointText(new Point(40,325));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '100';
+			
+			var text = new PointText(new Point(40,275));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '150';
+			
+			var text = new PointText(new Point(40,225));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '200';
+			
+			var text = new PointText(new Point(40,175));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '250';
+			
+			var text = new PointText(new Point(40,125));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '300';
+			
+			var text = new PointText(new Point(40,75));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '350';
+			
+			var text = new PointText(new Point(40,25));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '400';
+			
+			var text = new PointText(new Point(100,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '1';
+			
+			var text = new PointText(new Point(140,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '2';
+			
+			var text = new PointText(new Point(180,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '3';
+			
+			var text = new PointText(new Point(220,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '4';
+			
+			var text = new PointText(new Point(260,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '5';
+			
+			var text = new PointText(new Point(300,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '6';
+			
+			var text = new PointText(new Point(340,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '7';
+			
+			var text = new PointText(new Point(380,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '8';
+			
+			var text = new PointText(new Point(420,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '9';
+			
+			var text = new PointText(new Point(460,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '10';
+			
+			var text = new PointText(new Point(500,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '11';
+			
+			var text = new PointText(new Point(540,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '12';
+			
+			var text = new PointText(new Point(580,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '13';
+			
+			var text = new PointText(new Point(620,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '14';
+			
+			var text = new PointText(new Point(660,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '15';
+			
+			var text = new PointText(new Point(700,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '16';
+			
+			var text = new PointText(new Point(740,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '17';
+			
+			var text = new PointText(new Point(780,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '18';
+			
+			var text = new PointText(new Point(820,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '19';
+			
+			var text = new PointText(new Point(860,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '20';
+			
+			var text = new PointText(new Point(900,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '21';
+			
+			var text = new PointText(new Point(940,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '22';
+			
+			var text = new PointText(new Point(980,435));
+			text.justification = 'center';
+			text.fillColor = 'black';
+			text.content = '23';
+			
+			var counter2 = 0;
+			var temp2 = lum;
+			var myPath = new Path();
+			myPath.strokeColor = 'black';
+			
+			function onFrame(event){//function produces new line segments on the graph as new data is fed in
+				
+				if((event.time-counter2)>=1){
+					
+					temp2 = lum;
+					myPath.add(new Point(x1,((height + 20) - (temp2))));//adds the newest point to graph
+					x1 = x1 + 40;
+					counter2 = counter2 + 1;
+				}
+			}
+	</script>
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+	<br>
+	<canvas id="myCanvas2" resize></canvas>
+	<br>
+    <span id="visitors"></span>
+	<br><br><br>
+    <button onclick="start()">Retrieve</button>   
+</body>
+</html>

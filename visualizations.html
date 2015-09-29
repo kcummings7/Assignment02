@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html>
+<!-- 
+Author: Katherine Cummings
+Several lines of code have inspiration from examples on photon forums/tutorials and the paperjs tutorials.
+-->
+<head>
+	<script type="text/javascript">
+	var subject = 0;
+	var lum = 1;
+	var x = 60;
+	var x1 = 60;
+
+    function start(){//function takes in data from the photon, parses it, and assigns it to variables for later use
+		
+        document.getElementById("visitors").innerHTML = "Connecting to Photon!";
+        var deviceID = "3d0031001747343337363432";//photon id information
+        var accessToken = "5ba5aa063223de35f5ad312fb670bf8b829e36a9";
+        var eventSource = new EventSource("https://api.spark.io/v1/devices/" + deviceID + "/events/?access_token=" + accessToken);
+
+        eventSource.addEventListener('open', function(e) {console.log("Opened!"); },false);
+		eventSource.addEventListener('error', function(e) {console.log("Errored!"); },false);
+
+        eventSource.addEventListener('run', function(e){
+			var rawData = JSON.parse(e.data);
+			var parsedData = JSON.parse(rawData.data);
+			var tempSpan = document.getElementById("visitors");
+			tempSpan.innerHTML = "Visitors: " + parsedData.Persons + " total, as of " + rawData.published_at + ".  Light levels of: " + parsedData.Light;//divides up data for later display as a string
+			tempSpan.style.fontSize = "28px";
+			subject = parsedData.Persons;//assigns parsed data to variables for use
+			lum = parsedData.Light;
+        }, false);
+    }
+    </script>
+	<script type="text/javascript" src="dist/paper-full.js"></script>
+	<script type="text/paperscript" canvas="myCanvas">//creates lightbulb visualization
+	
+		view.viewSize = new Size(250, 250);//sets up canvas
+		
+		var back = new Rectangle(new Point(10, 10), new Point (210, 210));
+		var backpath = new Path.Rectangle(back);
+		backpath.fillColor = 'black';
+		
+		var rectangle = new Rectangle(new Point(80, 100), new Point(140, 170));
+		var path = new Path.Rectangle(rectangle, new Size(20, 20));
+		path.strokeColor = "black";
+		var rectangle1 = new Rectangle(new Point(80, 100), new Point(140, 145));
+		var path1 = new Path.Rectangle(rectangle1, new Size(20, 20));
+		var rectangle2 = new Rectangle(new Point(80, 100), new Point(140, 155));
+		var path2 = new Path.Rectangle(rectangle2, new Size(20, 20));
+		path2.strokeColor = "black";
+		path1.strokeColor = "black";
+		path.fillColor = 'grey';
+		var bulb = new Path.Circle(new Point(110, 90), 50);
+		bulb.strokeColor = "black";
+		
+		var filament = new Path();
+		filament.strokeColor = "black";
+		filament.moveTo(new Point(100, 138));
+		filament.lineTo(new Point(90, 110));
+		filament.lineTo(new Point(130, 110));
+		filament.lineTo(new Point(120, 138));
+		
+		var counter = 0;
+		var myPath = new Path();
+		
+		function onFrame(event){//function alters lightbulb color in correlation to light level data
+			
+			if((event.time-counter)>=1){
+				
+				if (lum > 255) {//constraints prevent irregular color displays thanks to unusual light levels
+					lum = 255;
+				}
+				r = lum;
+				g = lum;
+
+				if (lum <= 60) {
+					r = 1;
+					g = 1;
+					b = 1;
+				}
+				else {
+					b = lum - 45;
+				}
+				bulb.fillColor = "#"+(r).toString(16)+(g).toString(16)+(b).toString(16);//colors the bulb appropriately based on current light levels
+				counter = counter + 1;
+			}
+		}
+	</script>
+	<script type="text/paperscript" canvas="myCanvas2">//creates persons display
+	
+		view.viewSize = new Size(1000, 450);//sets up canvas
+		
+		function personGet(locX, locY){//function draws a simple stick figure
+		
+			var head = new Path.Circle(new Point(locX + 25, locY + 25), 25);
+			head.strokeColor = "black";
+			
+			var rEye = new Path.Circle(new Point(locX + 18, locY + 22), 2);
+			rEye.strokeColor = "black";
+			rEye.fillColor = "black";
+			
+			var lEye = new Path.Circle(new Point(locX + 32, locY + 22), 2);
+			lEye.strokeColor = "black";
+			lEye.fillColor = "black";
+			
+			var mouthTop = new Path();
+			mouthTop.strokeColor = 'black';
+			mouthTop.add(new Point(locX + 18, locY + 32));
+			mouthTop.add(new Point(locX + 32, locY + 32));
+			
+			var str = new Point(locX + 18, locY + 32);
+			var mid = new Point(locX + 25, locY + 40);
+			var end = new Point(locX + 32, locY + 32);
+			var path = new Path.Arc(str, mid, end);
+			path.strokeColor = 'black';
+			
+			var torso = new Path();
+			torso.strokeColor = 'black';
+			torso.add(new Point(locX + 25, locY + 50));
+			torso.add(new Point(locX + 25, locY + 100));
+			
+			var arms = new Path();
+			arms.strokeColor = 'black';
+			arms.add(new Point(locX, locY + 75));
+			arms.add(new Point(locX + 50, locY + 75));
+			
+			var rLeg = new Path();
+			rLeg.strokeColor = 'black';
+			rLeg.add(new Point(locX, locY + 125));
+			rLeg.add(new Point(locX + 25, locY + 100));
+			
+			var lLeg = new Path();
+			lLeg.strokeColor = 'black';
+			lLeg.add(new Point(locX + 50, locY + 125));
+			lLeg.add(new Point(locX + 25, locY + 100));
+		}
+		var counter2 = 0;
+		var oldSub = 0;
+		var xStart = 20;
+		var yStart = 20;
+		var lineCounter = 0;
+		
+		function onFrame(event){//function calls previous function to create a new person pictoggram and assign it a spance to be rendered
+				
+			if((event.time-counter2)>=1){
+				
+				while(subject > oldSub){//checks to see if there are less stick figures on screen than visitors according to the photon
+					oldSub = oldSub + 1;
+					personGet(xStart, yStart);
+					counter2 = counter2 + 1;
+					xStart = xStart + 120;
+					lineCounter = lineCounter + 1;
+					
+					if(lineCounter >= 8){//assigns new stick figure to another line for spacial condensing
+						yStart = yStart + 150;
+						xStart = 20;
+						lineCounter = 0;
+					}
+					
+					if(subject >= 25){//adds a wraning message to inform user when the display has reached person capacity
+						var text = new PointText(new Point(490, 225));
+						text.justification = 'center';
+						text.fillColor = 'red';
+						text.content = 'Warning! Your house is over capacity!\nPlease contact your local fire marshal.';
+					}
+				}
+			}
+		}
+	</script>
+</head>
+<body>
+	<canvas id="myCanvas" resize></canvas>
+	<br>
+	<canvas id="myCanvas2" resize></canvas>
+	<br><br>
+    <span id="visitors"></span>
+	<br><br><br>
+    <button onclick="start()">Retrieve</button>      
+</body>
+</html>
